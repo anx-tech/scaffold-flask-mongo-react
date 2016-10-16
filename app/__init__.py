@@ -6,7 +6,7 @@ from flask import Flask
 from flask_script import Manager
 from flask_pymongo import PyMongo
 
-from app.util.mongo import JSONEncoder
+from app.util.json import JSONEncoder
 
 
 app = Flask(__name__, static_folder='../static')
