@@ -2,3 +2,6 @@
 requirements.txt.old
 __pycache__
 *.pyc
+yarn.lock
+static/
+node_modules/
