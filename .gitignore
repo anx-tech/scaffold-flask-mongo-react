@@ -1,2 +1,4 @@
 .vagga/
 requirements.txt.old
+__pycache__
+*.pyc
