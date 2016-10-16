@@ -15,7 +15,36 @@ containers:
         - jsonschema
         - pymongo
 
+  mongodb:
+    setup:
+      - !Ubuntu xenial
+      - !AptTrust keys: [EA312927]
+      - !UbuntuRepo
+        url: http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2
+        suite: multiverse
+        components: []
+      - !Install
+        - mongodb-org=3.2.6
+        - mongodb-org-server=3.2.6
+        - mongodb-org-shell=3.2.6
+        - mongodb-org-mongos=3.2.6
+        - mongodb-org-tools=3.2.6
+      - !EnsureDir /data/db
+    volumes:
+      /data/db: !Persistent
+        name: mongo-storage
+        init-command: _init_mongo
+
+
 commands:
+  _init_mongo: !Command
+    description: Initializes mongodb data
+    container: mongodb
+    run: |
+      mongod --fork --syslog
+      echo "No mongo init commands specified"
+      mongod --shutdown
+
   freeze: !Command
     description: Freeze pytohn requirements to requirements.txt
     container: req-freezer
@@ -23,3 +52,10 @@ commands:
         cp /work/requirements.txt /work/requirements.txt.old
         pip freeze > /work/requirements.txt
         diff /work/requirements.txt.old /work/requirements.txt
+
+  mongo: !Command
+    description: Run a mongodb database
+    container: mongodb
+    run:
+      - mongod
+      - --rest
