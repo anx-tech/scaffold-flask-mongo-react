@@ -12,8 +12,9 @@ containers:
       - !Py3Install
         - pip
         - flask
+        - flask-script
+        - flask-pymongo
         - jsonschema
-        - pymongo
 
   app:
     setup:
@@ -21,6 +22,11 @@ containers:
       - !PipConfig
         <<: *pip-config
       - !Py3Requirements requirements.txt
+      - !EnsureDir /config
+    environ:
+      APP_CONFIG: /config/dev.py
+    volumes:
+      /config: !BindRO /work/config
 
   mongodb:
     setup:
@@ -70,4 +76,4 @@ commands:
       app: !Command
         description: Run app
         container: app
-        run: python3
+        run: python3 /work/manage.py runserver --host=0.0.0.0 --port=5000
