@@ -7,13 +7,20 @@ containers:
   req-freezer:
     setup: 
       - !Alpine v3.4
-      - !PipConfig 
+      - !PipConfig
         <<: *pip-config
       - !Py3Install
         - pip
         - flask
         - jsonschema
         - pymongo
+
+  app:
+    setup:
+      - !Alpine v3.4
+      - !PipConfig
+        <<: *pip-config
+      - !Py3Requirements requirements.txt
 
   mongodb:
     setup:
@@ -53,9 +60,14 @@ commands:
         pip freeze > /work/requirements.txt
         diff /work/requirements.txt.old /work/requirements.txt
 
-  mongo: !Command
-    description: Run a mongodb database
-    container: mongodb
-    run:
-      - mongod
-      - --rest
+  run: !Supervise
+    description: Run project alongside with mongodb
+    children:
+      mongo: !Command
+        description: Run a mongodb database
+        container: mongodb
+        run: mongod --rest
+      app: !Command
+        description: Run app
+        container: app
+        run: python3
