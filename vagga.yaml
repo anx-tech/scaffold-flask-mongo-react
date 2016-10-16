@@ -48,6 +48,15 @@ containers:
         name: mongo-storage
         init-command: _init_mongo
 
+  static:
+    setup:
+      - !Alpine v3.4
+      - !NpmDependencies  # TODO: migrate to yarn
+        file: package.json
+    environ:
+      NODE_PATH: /usr/lib/node_modules
+      NODE_ENV: production
+      
 
 commands:
   _init_mongo: !Command
@@ -77,3 +86,10 @@ commands:
         description: Run app
         container: app
         run: python3 /work/manage.py runserver --host=0.0.0.0 --port=5000
+
+  webpack: !Command
+    description: Run webpack to build js and css
+    container: static
+    run: 
+      - webpack 
+      - --progress
