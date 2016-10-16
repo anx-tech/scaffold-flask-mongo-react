@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+    <title>My app</title>
 </head>
 <body>
     <h1>My app</h1>
+    <div data-bazooka="NewItemComponent"></div>
+    <div data-bazooka="ListItemsComponent"></div>
+
+    <script src="{{ url_for('static', filename='js/main.bundle.js') }}"></script>
 </body>
 </html>
