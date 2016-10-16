@@ -1,10 +1,14 @@
+__templates:
+  pip-config: &pip-config
+    dependencies: true
+    python-exe: python3.5
+
 containers:
   req-freezer:
     setup: 
       - !Alpine v3.4
       - !PipConfig 
-        dependencies: true
-        python-exe: python3.5
+        <<: *pip-config
       - !Py3Install
         - pip
         - flask
@@ -15,4 +19,7 @@ commands:
   freeze: !Command
     description: Freeze pytohn requirements to requirements.txt
     container: req-freezer
-    run: pip freeze > /work/requirements.txt
+    run: |
+        cp /work/requirements.txt /work/requirements.txt.old
+        pip freeze > /work/requirements.txt
+        diff /work/requirements.txt.old /work/requirements.txt
